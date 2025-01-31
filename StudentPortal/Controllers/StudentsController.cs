@@ -46,5 +46,27 @@ namespace StudentPortal.Controllers
             var students = await dbContext.Students.ToListAsync();
             return View(students);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(Guid id)
+        {
+            var student = await dbContext.Students.FindAsync(id);
+            return View(student);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(Student studentModel)
+        {
+            var student = await dbContext.Students.FindAsync(studentModel.Id);
+            if(student is not null)
+            {
+                student.Name = studentModel.Name;
+                student.Email = studentModel.Email;
+                student.Phone = studentModel.Phone;
+                student.Subscribed = studentModel.Subscribed;
+            }
+            await dbContext.SaveChangesAsync();
+            return RedirectToAction("ListStudents");
+        }
     }
 }
